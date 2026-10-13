@@ -41,6 +41,16 @@ def get_settings() -> Settings:
     load_dotenv(override=False)
 
     api_key = os.environ.get("GEMINI_API_KEY", "").strip()
+
+if not api_key:
+    try:
+        import streamlit as st
+        api_key = str(
+            st.secrets.get("GEMINI_API_KEY", "")
+        ).strip()
+    except Exception:
+        api_key = ""
+
     if not api_key or api_key.startswith("your-"):
         raise ConfigurationError(
             "The Gemini API key is not configured. Set GEMINI_API_KEY in your "
